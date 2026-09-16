@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emotion Detector</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <p class="eyebrow">IBM WATSON NLP</p>
+      <h1>Emotion Detector</h1>
+      <p class="intro">Enter a sentence and analyze the dominant emotion.</p>
+      <form id="emotion-form">
+        <input id="text" type="text" placeholder="I feel happy about today" required>
+        <button type="submit">Analyze emotion</button>
+      </form>
+      <div id="result" class="result hidden"></div>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById("emotion-form");
+    const result = document.getElementById("result");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const text = document.getElementById("text").value.trim();
+      if (!text) {
+        result.className = "result error";
+        result.textContent = "Invalid input! Please enter a text to analyze.";
+        return;
+      }
+      const response = await fetch("/emotionDetector?textToAnalyze=" + encodeURIComponent(text));
+      const data = await response.json();
+      result.className = response.ok ? "result success" : "result error";
+      result.textContent = response.ok ? "Dominant emotion: " + data.dominant_emotion : data.error;
+    });
+  </script>
+</body>
+</html>
